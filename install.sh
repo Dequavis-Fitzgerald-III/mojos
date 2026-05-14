@@ -268,11 +268,11 @@ _disk_count=${#_disk_names[@]}
 read -rp "Disk to install to [1-${_disk_count}]: " _disk_input
 [[ "$_disk_input" =~ ^[0-9]+$ ]] && [[ "$_disk_input" -ge 1 ]] && [[ "$_disk_input" -le "$_disk_count" ]] \
     || error "Invalid selection."
-DISK="/dev/${_disk_names[$(( _disk_input - 1 ))]}"
+DISK="${_disk_names[$(( _disk_input - 1 ))]}"
 success "System will be installed on $DISK"
 
 # Detect remaining disks now that the primary is known
-mapfile -t _other_disks < <(lsblk -dpno NAME,TYPE 2>/dev/null | awk -v d="$DISK" '$2=="disk" && "/dev/"$1 != d {print "/dev/"$1}' || true)
+mapfile -t _other_disks < <(lsblk -dpno NAME,TYPE 2>/dev/null | awk -v d="$DISK" '$2=="disk" && $1 != d {print $1}' || true)
 _other_disk_count=${#_other_disks[@]}
 _detected_hdd=""
 [[ "$_other_disk_count" -eq 1 ]] && _detected_hdd="${_other_disks[0]}"
@@ -363,7 +363,7 @@ if [[ "$PROFILE" == "workstation" ]]; then
             _hdd_input="${_hdd_input:-$_hdd_default}"
             [[ "$_hdd_input" =~ ^[0-9]+$ ]] && [[ "$_hdd_input" -ge 1 ]] && [[ "$_hdd_input" -le "${#_hdd_names[@]}" ]] \
                 || error "Invalid selection."
-            HDD_DISK="/dev/${_hdd_names[$(( _hdd_input - 1 ))]}"
+            HDD_DISK="${_hdd_names[$(( _hdd_input - 1 ))]}"
             [[ ! -b "$HDD_DISK" ]] && error "Disk $HDD_DISK not found."
 
             # Detect the single partition on the drive.
