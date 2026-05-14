@@ -2,11 +2,9 @@
 
 ## What this repo is
 
-Arch Linux tooling for the_baker's fleet of machines. Every machine starts from a live ISO and runs through three scripts in sequence to reach a fully configured desktop.
+This is the live OS configuration for this machine. The scripts and manifests here define everything installed and configured on the running system. The goal is to keep the current setup working — no planned upgrades or new features.
 
 GitHub: `github.com/Dequavis-Fitzgerald-III/baker`
-
-**Current version: 1.1.0** — see `VERSION` and `ROADMAP.md` for the versioning scheme and plan.
 
 ---
 
@@ -18,7 +16,6 @@ All machines run Arch Linux. Tailnet name: **circus-tent**.
 |---|---|
 | nomadbaker | Laptop |
 | pearlybaker | Desktop (full GPU) |
-| ringbaker | Future home server (USA) — not yet built |
 
 ---
 
@@ -116,7 +113,6 @@ Single source of truth for what's installed on baker machines. Both `install.sh`
 | `packages/hardware/gpu-nvidia.txt` | Nvidia GPU drivers — `[pacman]` section |
 | `packages/hardware/gpu-amd.txt` | AMD GPU drivers — `[pacman]` section |
 | `packages/hardware/gpu-intel.txt` | Intel GPU drivers — `[pacman]` section |
-| `packages/user/` | User-specific packages (e.g. `the_baker.txt`) — coming in v1.2.0 |
 
 Bootstrap packages (kernel, bootloader, ucode) are hardcoded in `install.sh` only — they are install-time specific and don't belong in the manifests.
 
@@ -157,7 +153,7 @@ Permanent machine config file written by `install.sh` to `~/.baker-config`. Pers
 | pipewire | Audio |
 | NetworkManager | Networking |
 | Tailscale | VPN mesh / MagicDNS (circus-tent tailnet) |
-| NordVPN | Privacy VPN (killswitch + autoconnect us) |
+| NordVPN | Privacy VPN (autoconnect us, no killswitch) |
 | ufw | Firewall (deny incoming, allow outgoing) |
 | ollama | Local LLM inference (workstation only) |
 | yay | AUR helper |
@@ -177,10 +173,11 @@ Packages installed ad-hoc that should be added to `packages/base.txt`:
 
 ---
 
-## Known Issues / Future Work
+## Known Issues
 
-- **ringbaker** — home server not yet built. When it joins the_baker's fleet it will need its own profile in `install.sh` (server profile: no desktop packages, no NordVPN — Tailscale-only).
-- **`TEMP_JARVIS_DEV_SETUP.md`** — temporary file for Jarvis AI project dev environment setup on nomadbaker. Delete when Jarvis moves to the server.
+- NordVPN killswitch is disabled — NordLynx (WireGuard) and Tailscale (WireGuard) conflict at the routing level; enabling the killswitch breaks Tailscale.
+
+---
 
 ## Network DNS Notes
 
@@ -212,4 +209,4 @@ When making a fix, follow this sequence:
 2. **Explain the fix** — describe what's changing and why before writing it, so it can be reviewed and understood fully.
 3. **Make the fix** — same rules as always: `set -e`, colour helpers, conventional commit style, one section at a time.
 4. **Commit and push** — descriptive conventional commit message; no co-author lines.
-5. **Update context** — if the fix changes how something works, update `CLAUDE.md` to reflect it. If the session surfaced useful context that doesn't belong in `CLAUDE.md`, capture it in a dev notes file.
+5. **Update context** — if the fix changes how something works, update `CLAUDE.md` to reflect it.

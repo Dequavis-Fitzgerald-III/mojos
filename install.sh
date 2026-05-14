@@ -193,6 +193,38 @@ case "$TZ_INPUT" in
 esac
 success "Timezone: $TIMEZONE"
 
+# --- Locale ---
+echo ""
+echo "Select locale:"
+echo "  1) en_GB.UTF-8  (British English)"
+echo "  2) en_US.UTF-8  (American English)"
+echo "  3) Enter manually"
+read -rp "Locale [1-3, default: 1]: " LOCALE_INPUT
+LOCALE_INPUT="${LOCALE_INPUT:-1}"
+case "$LOCALE_INPUT" in
+    1) LOCALE="en_GB.UTF-8" ;;
+    2) LOCALE="en_US.UTF-8" ;;
+    3) read -rp "Enter locale (e.g. de_DE.UTF-8): " LOCALE ;;
+    *) error "Invalid locale selection." ;;
+esac
+success "Locale: $LOCALE"
+
+# --- Keymap ---
+echo ""
+echo "Select console keymap:"
+echo "  1) us  (US QWERTY)"
+echo "  2) uk  (UK QWERTY)"
+echo "  3) Enter manually"
+read -rp "Keymap [1-3, default: 1]: " KEYMAP_INPUT
+KEYMAP_INPUT="${KEYMAP_INPUT:-1}"
+case "$KEYMAP_INPUT" in
+    1) KEYMAP="us" ;;
+    2) KEYMAP="uk" ;;
+    3) read -rp "Enter keymap (e.g. de): " KEYMAP ;;
+    *) error "Invalid keymap selection." ;;
+esac
+success "Keymap: $KEYMAP"
+
 # --- Wifi (laptop only) ---
 # We only ask for wifi credentials if we're not already online.
 # This avoids failing when already connected (e.g. you ran the script to
@@ -444,6 +476,8 @@ echo "  Username:   $USERNAME"
 echo "  CPU:        $CPU ($UCODE)"
 echo "  GPU:        $GPU"
 echo "  Timezone:   $TIMEZONE"
+echo "  Locale:     $LOCALE"
+echo "  Keymap:     $KEYMAP"
 echo "  Disk:       $DISK"
 echo "  Dual boot:  $DUAL_BOOT"
 if [[ "$DUAL_BOOT" == true ]]; then
@@ -739,8 +773,6 @@ success "Chroot configuration done"
 # =============================================================================
 section "Writing .baker-config"
 
-LOCALE="en_GB.UTF-8"
-KEYMAP="us"
 BAKER_CONFIG="/mnt/home/$USERNAME/.baker-config"
 
 cat > "$BAKER_CONFIG" <<BAKERCONF
